@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:snake_game/blank_pixel.dart';
+import 'package:snake_game/food_pixel.dart';
 import 'package:snake_game/snake_pixel.dart';
 
 class HomePage extends StatefulWidget {
@@ -8,6 +11,8 @@ class HomePage extends StatefulWidget {
   @override
   State<HomePage> createState() => _HomePageState();
 }
+
+enum snake_Direction { UP, DOWN, LEFT, RIGHT }
 
 class _HomePageState extends State<HomePage> {
   // grid dimensions
@@ -21,6 +26,25 @@ class _HomePageState extends State<HomePage> {
     2,
   ];
 
+  // snake direction is initially to the right
+  var currentDirection = snake_Direction.RIGHT;
+
+  // food position
+  int foodPos = 55;
+
+  // start the game
+  void startGame() {
+    Timer.periodic(const Duration(milliseconds: 200), (timer) {
+      setState(() {
+        //add a new head
+        snakePos.add(snakePos.last + 1);
+
+        //remove the tail
+        snakePos.removeAt(0);
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,22 +56,49 @@ class _HomePageState extends State<HomePage> {
           // game grid
           Expanded(
             flex: 3,
-            child: GridView.builder(
-              itemCount: totalNumberOfSquares,
-              physics: const NeverScrollableScrollPhysics(),
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: rowSize),
-              itemBuilder: (context, index) {
-                if (snakePos.contains(index)) {
-                  return const SnakePixel();
-                } else {
-                  return const BlankPixel();
+            child: GestureDetector(
+              onVerticalDragUpdate: (details) {
+                if (details.delta.dy > 0) {
+                  print('move down');
+                } else if (details.delta.dy < 0) {
+                  print('move up');
                 }
               },
+              onHorizontalDragUpdate: (details) {
+                if (details.delta.dx > 0) {
+                  print('move right');
+                } else if (details.delta.dx < 0) {
+                  print('move left');
+                }
+              },
+              child: GridView.builder(
+                itemCount: totalNumberOfSquares,
+                physics: const NeverScrollableScrollPhysics(),
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: rowSize),
+                itemBuilder: (context, index) {
+                  if (snakePos.contains(index)) {
+                    return const SnakePixel();
+                  } else if (foodPos == index) {
+                    return const FoodPixel();
+                  } else {
+                    return const BlankPixel();
+                  }
+                },
+              ),
             ),
           ),
           // play button
-          Expanded(child: Container()),
+          Expanded(
+              child: Container(
+            child: Center(
+              child: MaterialButton(
+                child: Text('PLAY'),
+                color: Colors.pink,
+                onPressed: startGame,
+              ),
+            ),
+          )),
         ],
       ),
     );
