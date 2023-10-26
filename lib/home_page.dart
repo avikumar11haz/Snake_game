@@ -37,7 +37,8 @@ class _HomePageState extends State<HomePage> {
     Timer.periodic(const Duration(milliseconds: 200), (timer) {
       setState(() {
 
-        //keep the snake moving
+
+        //keep the snake moving or direction
         moveSnake();
       });
     });
