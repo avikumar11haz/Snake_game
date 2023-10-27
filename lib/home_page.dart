@@ -38,7 +38,7 @@ class _HomePageState extends State<HomePage> {
       setState(() {
 
 
-        //keep the snake moving or direction
+        //keep the snake moving
         moveSnake();
       });
     });
