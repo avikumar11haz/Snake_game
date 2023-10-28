@@ -156,7 +156,7 @@ class _HomePageState extends State<HomePage> {
               child: Container(
             child: Center(
               child: MaterialButton(
-                child: Text('PLAY'),
+                child: const Text('PLAY'),
                 color: Colors.pink,
                 onPressed: startGame,
               ),
