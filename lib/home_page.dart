@@ -58,8 +58,6 @@ class _HomePageState extends State<HomePage> {
             snakePos.add(snakePos.last + 1);
           }
 
-          //remove the tail
-          snakePos.removeAt(0);
         }
         break;
       case snake_Direction.LEFT:
@@ -72,8 +70,6 @@ class _HomePageState extends State<HomePage> {
             snakePos.add(snakePos.last - 1);
           }
 
-          //remove the tail
-          snakePos.removeAt(0);
         }
         break;
       case snake_Direction.UP:
@@ -85,8 +81,6 @@ class _HomePageState extends State<HomePage> {
             snakePos.add(snakePos.last - rowSize);
           }
 
-          //remove the tail
-          snakePos.removeAt(0);
         }
         break;
       case snake_Direction.DOWN:
@@ -98,15 +92,18 @@ class _HomePageState extends State<HomePage> {
             snakePos.add(snakePos.last + rowSize);
           }
 
-          //remove the tail
-          snakePos.removeAt(0);
         }
         break;
       default:
     }
 
     //snake is eating food
-    eatFood();
+    if(snakePos.last == foodPos){
+      eatFood();
+    }else {
+      //remove the tail
+      snakePos.removeAt(0);
+    }
   }
 
   @override
