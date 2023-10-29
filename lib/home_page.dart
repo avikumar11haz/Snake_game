@@ -37,12 +37,14 @@ class _HomePageState extends State<HomePage> {
     Timer.periodic(const Duration(milliseconds: 200), (timer) {
       setState(() {
 
-
         //keep the snake moving
         moveSnake();
+
       });
     });
   }
+
+  void eatFood(){}
 
   void moveSnake() {
     switch (currentDirection) {
@@ -102,6 +104,9 @@ class _HomePageState extends State<HomePage> {
         break;
       default:
     }
+
+    //snake is eating food
+    eatFood();
   }
 
   @override
