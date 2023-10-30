@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:snake_game/blank_pixel.dart';
@@ -36,15 +37,18 @@ class _HomePageState extends State<HomePage> {
   void startGame() {
     Timer.periodic(const Duration(milliseconds: 200), (timer) {
       setState(() {
-
         //keep the snake moving
         moveSnake();
-
       });
     });
   }
 
-  void eatFood(){}
+  void eatFood(){
+    //making sure the new food is not where the snake is
+    while (snakePos.contains(foodPos)) {
+      foodPos = Random().nextInt(totalNumberOfSquares);
+    }
+  }
 
   void moveSnake() {
     switch (currentDirection) {
@@ -104,6 +108,20 @@ class _HomePageState extends State<HomePage> {
       //remove the tail
       snakePos.removeAt(0);
     }
+  }
+
+  //game over
+  bool gameOver(){
+    //the game is over when the snake runs into itself
+    // this occurs when there is a duplicate position in the snakePos list
+
+    // this list is the body of the snake (no head)
+    List<int> bodySnake = snakePos.sublist(0, snakePos.length - 1);
+
+    if(bodySnake.contains(snakePos.length)){
+      return true;
+    }
+    return false;
   }
 
   @override
