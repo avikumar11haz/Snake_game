@@ -50,15 +50,34 @@ class _HomePageState extends State<HomePage> {
           //display a message to the user
           showDialog(
               context: context,
+              barrierDismissible: false,
               builder: (context) {
                 return AlertDialog(
                   title: const Text("Game over"),
-                  content: Text('Your score is: ' + currentScore.toString()),
+                  content: Column(
+                    children: [
+                      Text('Your score is: ' + currentScore.toString()),
+                      const TextField(
+                        decoration: InputDecoration(hintText: 'Enter name'),
+                      ),
+                    ],
+                  ),
+                  actions: [
+                    MaterialButton(
+                      onPressed: submitScore,
+                      child: Text('Submit'),
+                      color: Colors.pink,
+                    )
+                  ],
                 );
               });
         }
       });
     });
+  }
+
+  void submitScore() {
+    //
   }
 
   void eatFood() {
@@ -145,8 +164,28 @@ class _HomePageState extends State<HomePage> {
       backgroundColor: Colors.black,
       body: Column(
         children: [
-          //high scores
-          Expanded(child: Container()),
+          //scores
+          Expanded(
+              child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              //user current score
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text('Current Score'),
+                  Text(
+                    currentScore.toString(),
+                    style: const TextStyle(fontSize: 36),
+                  ),
+                ],
+              ),
+
+              //highscores, top5
+              Text('highscores..')
+            ],
+          )),
+
           // game grid
           Expanded(
             flex: 3,
