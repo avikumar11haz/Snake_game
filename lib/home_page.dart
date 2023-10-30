@@ -20,6 +20,9 @@ class _HomePageState extends State<HomePage> {
   int rowSize = 10;
   int totalNumberOfSquares = 100;
 
+  //user score
+  int currentScore = 0;
+
   // snake position
   List<int> snakePos = [
     0,
@@ -39,11 +42,27 @@ class _HomePageState extends State<HomePage> {
       setState(() {
         //keep the snake moving
         moveSnake();
+
+        // check if the game is over
+        if (gameOver()) {
+          timer.cancel();
+
+          //display a message to the user
+          showDialog(
+              context: context,
+              builder: (context) {
+                return AlertDialog(
+                  title: const Text("Game over"),
+                  content: Text('Your score is: ' + currentScore.toString()),
+                );
+              });
+        }
       });
     });
   }
 
-  void eatFood(){
+  void eatFood() {
+    currentScore++;
     //making sure the new food is not where the snake is
     while (snakePos.contains(foodPos)) {
       foodPos = Random().nextInt(totalNumberOfSquares);
@@ -56,69 +75,65 @@ class _HomePageState extends State<HomePage> {
         {
           //add a new head
           // if snake is at the right wall, need to readjust
-          if(snakePos.last % rowSize == 9){
+          if (snakePos.last % rowSize == 9) {
             snakePos.add(snakePos.last + 1 - rowSize);
-          }else {
+          } else {
             snakePos.add(snakePos.last + 1);
           }
-
         }
         break;
       case snake_Direction.LEFT:
         {
           //add a new head
           // if snake is at the right wall, need to readjust
-          if(snakePos.last % rowSize == 0){
+          if (snakePos.last % rowSize == 0) {
             snakePos.add(snakePos.last - 1 + rowSize);
-          }else {
+          } else {
             snakePos.add(snakePos.last - 1);
           }
-
         }
         break;
       case snake_Direction.UP:
         {
           //add a new head
-          if(snakePos.last < rowSize){
+          if (snakePos.last < rowSize) {
             snakePos.add(snakePos.last - rowSize + totalNumberOfSquares);
-          }else {
+          } else {
             snakePos.add(snakePos.last - rowSize);
           }
-
         }
         break;
       case snake_Direction.DOWN:
         {
           //add a new head
-          if(snakePos.last + rowSize > totalNumberOfSquares){
+          if (snakePos.last + rowSize > totalNumberOfSquares) {
             snakePos.add(snakePos.last + rowSize - totalNumberOfSquares);
-          }else {
+          } else {
             snakePos.add(snakePos.last + rowSize);
           }
-
         }
         break;
       default:
     }
 
     //snake is eating food
-    if(snakePos.last == foodPos){
+    if (snakePos.last == foodPos) {
       eatFood();
-    }else {
+    } else {
       //remove the tail
       snakePos.removeAt(0);
     }
   }
 
   //game over
-  bool gameOver(){
+  bool gameOver() {
     //the game is over when the snake runs into itself
     // this occurs when there is a duplicate position in the snakePos list
 
     // this list is the body of the snake (no head)
     List<int> bodySnake = snakePos.sublist(0, snakePos.length - 1);
 
-    if(bodySnake.contains(snakePos.length)){
+    if (bodySnake.contains(snakePos.length)) {
       return true;
     }
     return false;
