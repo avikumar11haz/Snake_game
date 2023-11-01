@@ -20,6 +20,8 @@ class _HomePageState extends State<HomePage> {
   int rowSize = 10;
   int totalNumberOfSquares = 100;
 
+  bool gameHasStarted = false;
+
   //user score
   int currentScore = 0;
 
@@ -38,6 +40,7 @@ class _HomePageState extends State<HomePage> {
 
   // start the game
   void startGame() {
+    gameHasStarted = true;
     Timer.periodic(const Duration(milliseconds: 200), (timer) {
       setState(() {
         //keep the snake moving
@@ -64,7 +67,11 @@ class _HomePageState extends State<HomePage> {
                   ),
                   actions: [
                     MaterialButton(
-                      onPressed: submitScore,
+                      onPressed: (){
+                        Navigator.pop(context);
+                        submitScore();
+                        newGame();
+                      },
                       child: Text('Submit'),
                       color: Colors.pink,
                     )
@@ -73,6 +80,20 @@ class _HomePageState extends State<HomePage> {
               });
         }
       });
+    });
+  }
+
+  void newGame(){
+    setState(() {
+      snakePos = [
+        0,
+        1,
+        2,
+      ];
+      foodPos = 55;
+      currentDirection = snake_Direction.RIGHT;
+      gameHasStarted = false;
+      currentScore = 0;
     });
   }
 
@@ -225,14 +246,15 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           ),
+
           // play button
           Expanded(
               child: Container(
             child: Center(
               child: MaterialButton(
                 child: const Text('PLAY'),
-                color: Colors.pink,
-                onPressed: startGame,
+                color: gameHasStarted ? Colors.grey : Colors.pink,
+                onPressed: gameHasStarted ? () {} : startGame,
               ),
             ),
           )),
