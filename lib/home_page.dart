@@ -6,6 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:snake_game/blank_pixel.dart';
 import 'package:snake_game/food_pixel.dart';
+import 'package:snake_game/highscore_tile.dart';
 import 'package:snake_game/snake_pixel.dart';
 
 class HomePage extends StatefulWidget {
@@ -109,7 +110,9 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  void newGame() {
+ Future newGame() async {
+    highscore_DocIds = [];
+    await getDocId();
     setState(() {
       snakePos = [
         0,
@@ -229,19 +232,34 @@ class _HomePageState extends State<HomePage> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 //user current score
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text('Current Score'),
-                    Text(
-                      currentScore.toString(),
-                      style: const TextStyle(fontSize: 36),
-                    ),
-                  ],
+                Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text('Current Score'),
+                      Text(
+                        currentScore.toString(),
+                        style: const TextStyle(fontSize: 36),
+                      ),
+                    ],
+                  ),
                 ),
 
                 //highscores, top5
-                Text('highscores..')
+                Expanded(
+                  child: gameHasStarted
+                      ? Container()
+                      : FutureBuilder(
+                          future: letsGetDocIds,
+                          builder: (context, snapshot) {
+                            return ListView.builder(
+                                itemCount: highscore_DocIds.length,
+                                itemBuilder: ((context, index) {
+                                  return HighScoreTile(
+                                      documentId: highscore_DocIds[index]);
+                                }));
+                          }),
+                )
               ],
             )),
 
