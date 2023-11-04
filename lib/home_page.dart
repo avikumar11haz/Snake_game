@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'dart:js_interop';
 import 'dart:math';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:snake_game/blank_pixel.dart';
 import 'package:snake_game/food_pixel.dart';
@@ -20,7 +22,9 @@ class _HomePageState extends State<HomePage> {
   int rowSize = 10;
   int totalNumberOfSquares = 100;
 
+  // game settings
   bool gameHasStarted = false;
+  final _nameController = TextEditingController();
 
   //user score
   int currentScore = 0;
@@ -60,14 +64,15 @@ class _HomePageState extends State<HomePage> {
                   content: Column(
                     children: [
                       Text('Your score is: ' + currentScore.toString()),
-                      const TextField(
+                      TextField(
+                        controller: _nameController,
                         decoration: InputDecoration(hintText: 'Enter name'),
                       ),
                     ],
                   ),
                   actions: [
                     MaterialButton(
-                      onPressed: (){
+                      onPressed: () {
                         Navigator.pop(context);
                         submitScore();
                         newGame();
@@ -83,7 +88,7 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  void newGame(){
+  void newGame() {
     setState(() {
       snakePos = [
         0,
@@ -98,7 +103,14 @@ class _HomePageState extends State<HomePage> {
   }
 
   void submitScore() {
-    //
+    //get access to the collection
+    var database = FirebaseFirestore.instance;
+
+    //add data to firebase
+    database.collection('highscores').add({
+      "name": _nameController.text,
+      "score": currentScore,
+    });
   }
 
   void eatFood() {
