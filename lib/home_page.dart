@@ -42,6 +42,27 @@ class _HomePageState extends State<HomePage> {
   // food position
   int foodPos = 55;
 
+  //highscore list
+  List<String> highscore_DocIds = [];
+  late final Future? letsGetDocIds;
+
+  @override
+  void initState() {
+    letsGetDocIds = getDocId();
+    super.initState();
+  }
+
+  Future getDocId() async {
+    await FirebaseFirestore.instance
+        .collection("highscores")
+        .orderBy("score", descending: true)
+        .limit(10)
+        .get()
+        .then((value) => value.docs.forEach((element) {
+              highscore_DocIds.add(element.reference.id);
+            }));
+  }
+
   // start the game
   void startGame() {
     gameHasStarted = true;
