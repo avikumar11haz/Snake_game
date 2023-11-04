@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:js_interop';
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -110,9 +109,21 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
- Future newGame() async {
+  void submitScore() {
+    //get access to the collection
+    var database = FirebaseFirestore.instance;
+
+    //add data to firebase
+    database.collection('highscores').add({
+      "name": _nameController.text,
+      "score": currentScore,
+    });
+  }
+
+  Future newGame() async {
     highscore_DocIds = [];
     await getDocId();
+
     setState(() {
       snakePos = [
         0,
@@ -123,17 +134,6 @@ class _HomePageState extends State<HomePage> {
       currentDirection = snake_Direction.RIGHT;
       gameHasStarted = false;
       currentScore = 0;
-    });
-  }
-
-  void submitScore() {
-    //get access to the collection
-    var database = FirebaseFirestore.instance;
-
-    //add data to firebase
-    database.collection('highscores').add({
-      "name": _nameController.text,
-      "score": currentScore,
     });
   }
 
@@ -209,7 +209,7 @@ class _HomePageState extends State<HomePage> {
     // this list is the body of the snake (no head)
     List<int> bodySnake = snakePos.sublist(0, snakePos.length - 1);
 
-    if (bodySnake.contains(snakePos.length)) {
+    if (bodySnake.contains(snakePos.last)) {
       return true;
     }
     return false;
