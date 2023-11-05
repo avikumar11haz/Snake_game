@@ -121,6 +121,7 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  //new game
   Future newGame() async {
     highscore_DocIds = [];
     await getDocId();
